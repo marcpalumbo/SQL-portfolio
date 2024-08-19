@@ -60,5 +60,21 @@ ORDER BY average_duration DESC
 LIMIT 10;
 
 
+-- find songs on the top performing list that are shorter than the duration average
+SELECT
+    title,
+    artist,
+    ROUND(avg(duration)/60, 3) AS average_duration,
+FROM `weatheranalysis-356904.spotifysongs.songs` 
+GROUP BY title,artist
+ 
+HAVING
+  ROUND(avg(duration)/60, 3)<
+  (SELECT ROUND(avg(duration)/60, 3) 
+  FROM `weatheranalysis-356904.spotifysongs.songs` )
+ORDER BY average_duration DESC
+LIMIT 10;
+
+
 
 
