@@ -1,0 +1,71 @@
+-- Dataset: Public Men's NCAA basketball Dataset on Bigquery
+-- source: bigquery-public-data.ncaa_basketball
+
+-- Top 15 wins in NCAA Men's tournament from 1985- 2017
+SELECT 
+win_market,
+win_name as winner,
+COUNT(win_name) as number_of_wins
+ FROM `bigquery-public-data.ncaa_basketball.mbb_historical_tournament_games`
+ GROUP BY win_market,winner
+ ORDER BY number_of_wins desc
+ limit 15;
+
+-- Top 15 losses in NCAA Men's tournament from 1985-2017
+SELECT 
+lose_market,
+lose_name as loser,
+count(lose_name) as number_of_losses
+
+ FROM `bigquery-public-data.ncaa_basketball.mbb_historical_tournament_games`
+
+ group by lose_market,lose_name
+ 
+ ORDER BY number_of_losses desc
+ 
+ limit 15;
+
+
+
+-- average score of winning and losing teams, average margin of victory by season
+
+SELECT 
+season,
+ROUND(CAST(AVG(win_pts) AS float64),2) AS avg_winning_score,
+ROUND(CAST(AVG(lose_pts) AS float64),2) AS avg_lose_score,
+ROUND(CAST((AVG(win_pts) - AVG(lose_pts))AS float64),2) AS avg_margin_of_victory
+
+ FROM `bigquery-public-data.ncaa_basketball.mbb_historical_tournament_games`
+ GROUP BY season
+ ORDER BY season;
+
+-- find the largest margin of victory in the dataset
+
+SELECT 
+win_market,
+win_name,
+lose_market,
+lose_name,
+MAX(
+  win_pts -lose_pts
+) AS margin_of_victory
+
+ FROM `bigquery-public-data.ncaa_basketball.mbb_historical_tournament_games`
+ GROUP BY win_market,win_name,lose_market,lose_name
+ ORDER BY margin_of_victory DESC
+ 
+ LIMIT 1;
+
+
+-- Join mascots and colors tables to get each team's names, mascot, it's name, and the main color
+SELECT 
+c.market,
+c.color,
+m.mascot,
+m.mascot_name
+
+
+ FROM `bigquery-public-data.ncaa_basketball.team_colors` as c
+ INNER JOIN `bigquery-public-data.ncaa_basketball.mascots` as m
+on c.id = m.id 
+ LIMIT 1000;
