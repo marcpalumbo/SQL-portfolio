@@ -1,0 +1,64 @@
+-- These queries will provide insight into the top songs from 2010-2019 via spotify
+-- Data source: https://www.kaggle.com/datasets/muhmores/spotify-top-100-songs-of-20152019
+-- queries done using bigquery on Google Cloud Console
+
+
+-- which artist appears the most on in this dataset
+SELECT  
+artist,
+count(artist) as number_of_hits
+
+ FROM `weatheranalysis-356904.spotifysongs.songs` 
+ 
+ group by artist
+ order by number_of_hits desc;
+
+ -- which artist type has the most hits?
+
+ select
+  artist_type,
+   count(artist_type) as count_of_bands_or_groups
+ from `weatheranalysis-356904.spotifysongs.songs` 
+ group by artist_type
+ order by count_of_bands_or_groups desc;
+
+
+-- which genre was the most popular in descending order 
+
+select 
+  top_genre,
+count(top_genre) as pop_gen
+from`weatheranalysis-356904.spotifysongs.songs` 
+ 
+group by top_genre
+order by pop_gen desc;
+
+
+-- average song length in minutes grouped by genre
+
+SELECT
+    top_genre,
+    ROUND(avg(duration)/60, 3) AS average_duration,
+FROM `weatheranalysis-356904.spotifysongs.songs` 
+GROUP BY top_genre 
+ORDER BY average_duration DESC
+LIMIT 10;
+
+-- find songs on the top performing list that are longer than the duration average
+SELECT
+    title,
+    artist,
+    ROUND(avg(duration)/60, 3) AS average_duration,
+FROM `weatheranalysis-356904.spotifysongs.songs` 
+GROUP BY title,artist
+ 
+HAVING
+  ROUND(avg(duration)/60, 3)>
+  (SELECT ROUND(avg(duration)/60, 3) 
+  FROM `weatheranalysis-356904.spotifysongs.songs` )
+ORDER BY average_duration DESC
+LIMIT 10;
+
+
+
+
