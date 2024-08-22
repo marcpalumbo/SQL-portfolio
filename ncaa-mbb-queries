@@ -69,3 +69,12 @@ m.mascot_name
  INNER JOIN `bigquery-public-data.ncaa_basketball.mascots` as m
 on c.id = m.id 
  LIMIT 1000;
+
+
+--find the average margin of victory in the championship round
+SELECT 
+avg(win_pts) - avg(lose_pts) as margin_of_victory
+
+FROM `bigquery-public-data.ncaa_basketball.mbb_historical_tournament_games` 
+
+Where round = 2;
